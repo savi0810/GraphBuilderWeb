@@ -1,0 +1,27 @@
+﻿@using GraphBuilderFrontend.Components.Common
+@using GraphBuilderFrontend.Constants
+
+<Card Class="mb-4" 
+      Style="border: none;"
+      HeaderTitle="💡 Примеры функций"
+      BodyClass="p-3">
+    
+    <div class="row g-2">
+        @foreach (var example in AppConstants.FunctionExamples)
+        {
+            <div class="col-6">
+                <Button 
+                    Variant="OutlineInfo"
+                    Size="Small"
+                    Class="w-100 text-start"
+                    OnClick="@(() => OnExampleSelected.InvokeAsync(example))">
+                    <small>@example</small>
+                </Button>
+            </div>
+        }
+    </div>
+</Card>
+
+@code {
+    [Parameter] public EventCallback<string> OnExampleSelected { get; set; }
+}

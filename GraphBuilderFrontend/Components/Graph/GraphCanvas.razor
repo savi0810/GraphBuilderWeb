@@ -1,0 +1,43 @@
+﻿@using GraphBuilderShared.Models
+
+<svg @ref="svgElement"
+     width="100%"
+     height="100%"
+     viewBox="0 0 1000 1000"
+     preserveAspectRatio="xMidYMid meet"
+     @onwheel="HandleWheel"
+     style="background-color: white; cursor: default;">
+
+    <GraphGrid Viewport="@Viewport" />
+    <GraphAxes Viewport="@Viewport" />
+    <AxisLabels Viewport="@Viewport" />
+
+    @if (_functions != null)
+    {
+        @foreach (var func in _functions.Where(f => !string.IsNullOrEmpty(f.Path)))
+        {
+            <path d="@func.Path"
+                  stroke="@func.Color"
+                  stroke-width="2.5"
+                  fill="none"
+                  opacity="0.9" />
+        }
+    }
+</svg>
+
+@code {
+    [Parameter] public ViewportState Viewport { get; set; } = null!;
+    [Parameter] public List<GraphFunction> Functions { get; set; } = new();
+    [Parameter] public EventCallback<WheelEventArgs> OnWheel { get; set; }
+
+    private ElementReference svgElement;
+    private List<GraphFunction> _functions = new();
+
+    protected override void OnParametersSet()
+    {
+        _functions = Functions.ToList();
+        base.OnParametersSet();
+    }
+
+    private Task HandleWheel(WheelEventArgs e) => OnWheel.InvokeAsync(e);
+}

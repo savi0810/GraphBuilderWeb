@@ -1,0 +1,12 @@
+﻿<input type="color"
+       class="form-control form-control-color"
+       value="@Color"
+       @onchange="@(e => OnColorChanged.InvokeAsync(e.Value?.ToString() ?? "#000000"))"
+       style="width: 40px; height: 40px;"
+       title="@Title" />
+
+@code {
+    [Parameter] public string Color { get; set; } = "#000000";
+    [Parameter] public string Title { get; set; } = "Выбрать цвет";
+    [Parameter] public EventCallback<string> OnColorChanged { get; set; }
+}

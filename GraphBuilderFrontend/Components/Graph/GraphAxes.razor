@@ -1,0 +1,24 @@
+﻿@using GraphBuilderFrontend.Utils
+@using GraphBuilderShared.Models
+
+@{
+    var (_, axisX, axisY) = GeometryUtils.CalculateGrid(Viewport);
+}
+
+<line x1="@axisX.X1.ToString("0")"
+      y1="@axisX.Y1.ToString("0")"
+      x2="@axisX.X2.ToString("0")"
+      y2="@axisX.Y2.ToString("0")"
+      stroke="#2c3e50"
+      stroke-width="2" />
+
+<line x1="@axisY.X1.ToString("0")"
+      y1="@axisY.Y1.ToString("0")"
+      x2="@axisY.X2.ToString("0")"
+      y2="@axisY.Y2.ToString("0")"
+      stroke="#2c3e50"
+      stroke-width="2" />
+
+@code {
+    [Parameter] public ViewportState Viewport { get; set; } = null!;
+}

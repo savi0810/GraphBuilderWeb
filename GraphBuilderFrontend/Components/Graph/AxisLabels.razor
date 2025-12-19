@@ -1,0 +1,60 @@
+﻿@using GraphBuilderFrontend.Utils
+@using GraphBuilderShared.Models
+
+@if (Viewport != null)
+{
+    @if (Viewport.MinX <= 0 && Viewport.MaxX >= 0)
+    {
+        var zeroX = GeometryUtils.WorldToScreenX(0, Viewport);
+        var zeroY = GeometryUtils.WorldToScreenY(0, Viewport);
+
+        <svg:text x="@(zeroX + 5)" y="@(zeroY - 10)"
+                  text-anchor="start" dominant-baseline="hanging"
+                  fill="#666" font-size="13" font-family="Arial, sans-serif" font-weight="bold">0
+        </svg:text>
+    }
+
+    @if (Viewport.MinX <= 1 && Viewport.MaxX >= 1)
+    {
+        var x1 = GeometryUtils.WorldToScreenX(1, Viewport);
+        var y1 = GeometryUtils.WorldToScreenY(0, Viewport) + 15;
+
+        <svg:text x="@x1" y="@y1" text-anchor="middle" dominant-baseline="hanging"
+                  fill="#666" font-size="13" font-family="Arial, sans-serif">1
+        </svg:text>
+    }
+
+    @if (Viewport.MinX <= -1 && Viewport.MaxX >= -1)
+    {
+        var xMinus1 = GeometryUtils.WorldToScreenX(-1, Viewport);
+        var yMinus1 = GeometryUtils.WorldToScreenY(0, Viewport) - 15;
+
+        <svg:text x="@xMinus1" y="@yMinus1" text-anchor="middle" dominant-baseline="hanging"
+                  fill="#666" font-size="13" font-family="Arial, sans-serif">-1
+        </svg:text>
+    }
+
+    @if (Viewport.MinY <= 1 && Viewport.MaxY >= 1)
+    {
+        var x1y = GeometryUtils.WorldToScreenX(0, Viewport) - 15;
+        var y1y = GeometryUtils.WorldToScreenY(1, Viewport);
+
+        <svg:text x="@x1y" y="@y1y" text-anchor="end" dominant-baseline="middle"
+                  fill="#666" font-size="13" font-family="Arial, sans-serif">-1
+        </svg:text>
+    }
+
+    @if (Viewport.MinY <= -1 && Viewport.MaxY >= -1)
+    {
+        var xMinus1y = GeometryUtils.WorldToScreenX(0, Viewport) + 15;
+        var yMinus1y = GeometryUtils.WorldToScreenY(-1, Viewport);
+
+        <svg:text x="@xMinus1y" y="@yMinus1y" text-anchor="end" dominant-baseline="middle"
+                  fill="#666" font-size="13" font-family="Arial, sans-serif">1
+        </svg:text>
+    }
+}
+
+@code {
+    [Parameter] public ViewportState Viewport { get; set; } = null!;
+}

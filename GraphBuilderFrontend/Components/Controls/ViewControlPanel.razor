@@ -1,0 +1,45 @@
+﻿@using GraphBuilderFrontend.Components.Common
+@using GraphBuilderShared.Models
+
+<Card Class="mb-4"
+      Style="border: none;"
+      HeaderTitle="🔍 Управление видом"
+      BodyClass="p-3">
+
+    <div class="row g-2 mb-3">
+        <div class="col-6">
+            <Button Variant="OutlinePrimary"
+                    Class="w-100"
+                    OnClick="@OnZoomIn"
+                    Icon="➕"
+                    Text="Ближе" />
+        </div>
+        <div class="col-6">
+            <Button Variant="OutlinePrimary"
+                    Class="w-100"
+                    OnClick="@OnZoomOut"
+                    Icon="➖"
+                    Text="Дальше" />
+        </div>
+    </div>
+
+    <Button Variant="OutlineSecondary"
+            Class="w-100 mb-3"
+            OnClick="@OnResetView"
+            Icon="🔄"
+            Text="Сброс вида" />
+
+    <div class="small text-muted border-top pt-2">
+        <div class="d-flex justify-content-between">
+            <span>X: [@Viewport.MinX.ToString("F1"), @Viewport.MaxX.ToString("F1")]</span>
+            <span>Y: [@Viewport.MinY.ToString("F1"), @Viewport.MaxY.ToString("F1")]</span>
+        </div>
+    </div>
+</Card>
+
+@code {
+    [Parameter] public ViewportState Viewport { get; set; } = new();
+    [Parameter] public EventCallback OnZoomIn { get; set; }
+    [Parameter] public EventCallback OnZoomOut { get; set; }
+    [Parameter] public EventCallback OnResetView { get; set; }
+}

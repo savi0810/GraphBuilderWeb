@@ -1,0 +1,57 @@
+﻿@using System.Timers
+@implements IDisposable
+
+@if (!string.IsNullOrEmpty(Message))
+{
+    <div class="position-fixed top-0 end-0 m-3" style="max-width: 400px; z-index: 9999;">
+        <div class="alert alert-danger alert-dismissible fade show shadow-lg" role="alert">
+            <div class="d-flex align-items-center">
+                <span class="me-2">⚠️</span>
+                <div class="flex-grow-1">
+                    <strong>Ошибка:</strong> @Message
+                </div>
+                @if (ShowCloseButton)
+                {
+                    <button type="button" class="btn-close" @onclick="Close"></button>
+                }
+            </div>
+        </div>
+    </div>
+}
+
+@code {
+    [Parameter] public string Message { get; set; } = string.Empty;
+    [Parameter] public bool ShowCloseButton { get; set; } = true;
+    [Parameter] public int AutoCloseDelay { get; set; } = 5000;
+    [Parameter] public EventCallback OnClose { get; set; }
+
+    private Timer? _autoCloseTimer;
+
+    protected override void OnParametersSet()
+    {
+        if (!string.IsNullOrEmpty(Message) && AutoCloseDelay > 0)
+        {
+            StartAutoCloseTimer();
+        }
+    }
+
+    private void StartAutoCloseTimer()
+    {
+        _autoCloseTimer?.Dispose();
+        _autoCloseTimer = new Timer(AutoCloseDelay);
+        _autoCloseTimer.Elapsed += async (s, e) => await InvokeAsync(Close);
+        _autoCloseTimer.AutoReset = false;
+        _autoCloseTimer.Start();
+    }
+
+    private async Task Close()
+    {
+        _autoCloseTimer?.Stop();
+        await OnClose.InvokeAsync();
+    }
+
+    public void Dispose()
+    {
+        _autoCloseTimer?.Dispose();
+    }
+}

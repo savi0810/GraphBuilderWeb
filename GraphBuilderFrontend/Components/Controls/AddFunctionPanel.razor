@@ -1,0 +1,67 @@
+﻿@using GraphBuilderFrontend.Components.Common
+@using GraphBuilderFrontend.Components.Functions
+@using GraphBuilderFrontend.Utils
+
+<Card Class="mb-4"
+      Style="border: none;"
+      HeaderTitle="➕ Добавить функцию"
+      BodyClass="p-3">
+
+    <div class="mb-3">
+        <FunctionInput Value="@_newExpression"
+                       ValueChanged="@HandleValueChanged"
+                       OnEnterPressed="@HandleAdd"
+                       Class="form-control-lg"
+                       Placeholder="Например: x^2" />
+    </div>
+
+    <div class="d-flex align-items-center gap-2">
+        <Button Variant="Primary"
+                OnClick="@HandleAdd"
+                Disabled="@string.IsNullOrWhiteSpace(_newExpression)"
+                Icon="➕"
+                Text="Добавить"
+                Class="flex-shrink-0"
+                Style="min-width: 120px;" />
+
+        <div class="d-flex align-items-center ms-auto">
+            <label class="me-2 text-muted small">Цвет:</label>
+            <ColorPicker Color="@_newColor"
+                         OnColorChanged="@(color => _newColor = color)"
+                         Title="Выбрать цвет для графика" />
+            <Button Variant="OutlineSecondary"
+                    Size="Small"
+                    OnClick="RandomizeColor"
+                    Icon="🎲"
+                    Class="ms-2"
+                    Title="Случайный цвет" />
+        </div>
+    </div>
+</Card>
+
+@code {
+    [Parameter] public EventCallback<(string Expression, string Color)> OnAddFunction { get; set; }
+
+    private string _newExpression = string.Empty;
+    private string _newColor = ColorUtils.GetRandomColor();
+
+    private void HandleValueChanged(string? value)
+    {
+        _newExpression = value ?? string.Empty;
+    }
+
+    private async Task HandleAdd()
+    {
+        if (!string.IsNullOrWhiteSpace(_newExpression))
+        {
+            await OnAddFunction.InvokeAsync((_newExpression.Trim(), _newColor));
+            _newExpression = string.Empty;
+            _newColor = ColorUtils.GetRandomColor();
+        }
+    }
+
+    private void RandomizeColor()
+    {
+        _newColor = ColorUtils.GetRandomColor();
+    }
+}

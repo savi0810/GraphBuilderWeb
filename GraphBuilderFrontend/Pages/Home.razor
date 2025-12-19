@@ -1,0 +1,94 @@
+﻿@page "/"
+@using GraphBuilderFrontend.Components.Common
+@using GraphBuilderFrontend.Components.Controls
+@using GraphBuilderFrontend.Components.Functions
+@using GraphBuilderFrontend.Components.Graph
+@using GraphBuilderFrontend.Services
+@using GraphBuilderFrontend.Services.EventHandlers
+@using GraphBuilderFrontend.Models
+@using GraphBuilderFrontend.Utils
+@using GraphBuilderShared.Models
+@inject FunctionManager FunctionManager
+@inject ViewportManager ViewportManager
+@inject FunctionEventHandlers FunctionHandlers
+@inject GraphEventHandlers GraphHandlers
+@inject ViewportEventHandlers ViewportHandlers
+@inject AppState AppState
+
+<div class="d-flex vh-100">
+    <div class="flex-grow-1 position-relative">
+        <GraphCanvas Viewport="@ViewportManager.GetCurrentViewport()"
+                     Functions="@FunctionManager.Functions.ToList()"
+                     OnWheel="@GraphWheel" />
+
+        <ErrorAlert Message="@AppState.ErrorMessage" OnClose="@ClearError" />
+    </div>
+
+    <div class="flex-shrink-0 border-start bg-light" style="width: 350px; overflow-y: auto;">
+        <div class="p-3">
+            <div class="d-flex align-items-center mb-4">
+                <span class="me-2" style="font-size: 1.5rem; color: #3498db;">📈</span>
+                <h4 class="mb-0 text-dark">Graph Builder</h4>
+            </div>
+
+            @if (FunctionManager.Functions.Any())
+            {
+                <Card Class="mb-4" Style="border: none;" HeaderTitle="📊 Функции" BodyClass="p-3">
+                    @foreach (var func in FunctionManager.Functions.OrderBy(f => f.Id))
+                    {
+                        <FunctionItem Function="@func"
+                                      OnUpdateFunction="@UpdateFunction"
+                                      OnColorChanged="@UpdateColor"
+                                      OnRemoveFunction="@RemoveFunction" />
+                    }
+                </Card>
+            }
+
+            <AddFunctionPanel OnAddFunction="@AddFunction" />
+            <ExamplesPanel OnExampleSelected="@SelectExample" />
+
+            <ViewControlPanel Viewport="@ViewportManager.GetCurrentViewport()"
+                              OnZoomIn="@ZoomIn"
+                              OnZoomOut="@ZoomOut"
+                              OnResetView="@ResetView" />
+        </div>
+    </div>
+</div>
+
+@code {
+    protected override async Task OnInitializedAsync()
+    {
+        try
+        {
+            var (success1, error1) = await FunctionManager.AddFunctionAsync("x^2", "#e74c3c");
+            if (!success1 && !string.IsNullOrEmpty(error1)) AppState.SetError(error1);
+        }
+        catch (Exception ex)
+        {
+            AppState.SetError($"Ошибка инициализации: {ex.Message}");
+        }
+    }
+
+    private async Task GraphWheel(WheelEventArgs e) =>
+        await GraphHandlers.HandleWheel(e.DeltaY);
+
+    private async Task AddFunction((string Expression, string Color) tuple) =>
+        await FunctionHandlers.HandleAddFunction(tuple.Expression, tuple.Color);
+
+    private async Task UpdateFunction((GraphFunction Function, string NewExpression) tuple) =>
+        await FunctionHandlers.HandleUpdateFunction(tuple.Function, tuple.NewExpression);
+
+    private async Task UpdateColor((GraphFunction Function, string NewColor) tuple) =>
+        await FunctionHandlers.HandleUpdateFunctionColor(tuple.Function, tuple.NewColor);
+
+    private void RemoveFunction(GraphFunction function) =>
+        FunctionHandlers.HandleRemoveFunction(function);
+
+    private async Task SelectExample(string example) =>
+        await FunctionHandlers.HandleAddFunction(example, ColorUtils.GetRandomColor());
+
+    private async Task ZoomIn() => await ViewportHandlers.HandleZoomIn();
+    private async Task ZoomOut() => await ViewportHandlers.HandleZoomOut();
+    private async Task ResetView() => await ViewportHandlers.HandleResetView();
+    private void ClearError() => AppState.ClearError();
+}

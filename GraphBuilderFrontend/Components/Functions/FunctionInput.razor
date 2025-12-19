@@ -1,0 +1,38 @@
+﻿<div class="position-relative">
+    <!-- Иконка функции слева -->
+    <div class="position-absolute top-50 start-0 translate-middle-y ms-3 z-1">
+        <span class="text-secondary fw-bold" style="font-size: 1.1rem;">ƒ(x) =</span>
+    </div>
+
+    <!-- Поле ввода -->
+    <input type="text"
+           class="form-control @Class"
+           style="padding-left: 80px; font-family: 'Courier New', monospace;"
+           value="@Value"
+           @oninput="HandleInput"
+           @onkeypress="@HandleKeyPress"
+           placeholder="@Placeholder" />
+</div>
+
+@code {
+    [Parameter] public string Value { get; set; } = string.Empty;
+    [Parameter] public EventCallback<string?> ValueChanged { get; set; }
+    [Parameter] public EventCallback<string?> OnEnterPressed { get; set; }
+    [Parameter] public string Placeholder { get; set; } = "Введите математическое выражение";
+    [Parameter] public string? Class { get; set; }
+
+    private async Task HandleInput(ChangeEventArgs e)
+    {
+        var value = e.Value?.ToString() ?? string.Empty;
+        var cleanedValue = value.Trim(' ', '"');
+        await ValueChanged.InvokeAsync(cleanedValue);
+    }
+
+    private async Task HandleKeyPress(KeyboardEventArgs e)
+    {
+        if (e.Key == "Enter")
+        {
+            await OnEnterPressed.InvokeAsync(Value);
+        }
+    }
+}

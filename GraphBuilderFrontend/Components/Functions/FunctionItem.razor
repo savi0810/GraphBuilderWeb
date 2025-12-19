@@ -1,0 +1,60 @@
+﻿@using GraphBuilderFrontend.Components.Common
+@using GraphBuilderShared.Models
+
+<Card Class="mb-2" Style="border: none;" BodyClass="p-3">
+    <div class="d-flex align-items-center mb-2">
+        <div class="flex-grow-1">
+            <FunctionInput Value="@Function.Expression"
+                           ValueChanged="@HandleExpressionChanged"
+                           Placeholder="f(x) = "
+                           OnEnterPressed="@HandleExpressionEnter" />
+        </div>
+        <div class="ms-2">
+            <ColorPicker Color="@Function.Color"
+                         OnColorChanged="@HandleColorChanged" />
+        </div>
+    </div>
+    <div class="d-flex justify-content-between align-items-center">
+        <small class="text-muted">
+            ID: @Function.Id
+        </small>
+        <Button Variant="OutlineDanger"
+                Size="Small"
+                OnClick="@HandleRemove"
+                Icon="🗑️"
+                Text="Удалить" />
+    </div>
+</Card>
+
+@code {
+    [Parameter] public GraphFunction Function { get; set; } = null!;
+    [Parameter] public EventCallback<(GraphFunction Function, string NewExpression)> OnUpdateFunction { get; set; }
+    [Parameter] public EventCallback<(GraphFunction Function, string NewColor)> OnColorChanged { get; set; }
+    [Parameter] public EventCallback<GraphFunction> OnRemoveFunction { get; set; }
+
+    private async Task HandleExpressionChanged(string? expression)
+    {
+        if (!string.IsNullOrWhiteSpace(expression))
+        {
+            await OnUpdateFunction.InvokeAsync((Function, expression));
+        }
+    }
+
+    private async Task HandleExpressionEnter(string? expression)
+    {
+        if (!string.IsNullOrWhiteSpace(expression))
+        {
+            await OnUpdateFunction.InvokeAsync((Function, expression));
+        }
+    }
+
+    private async Task HandleColorChanged(string color)
+    {
+        await OnColorChanged.InvokeAsync((Function, color));
+    }
+
+    private async Task HandleRemove()
+    {
+        await OnRemoveFunction.InvokeAsync(Function);
+    }
+}

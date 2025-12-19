@@ -1,0 +1,37 @@
+﻿<div class="card shadow-sm @Class" style="@Style">
+    @if (!string.IsNullOrEmpty(HeaderTitle) || HeaderContent != null)
+    {
+        <div class="card-header @HeaderClass">
+            @if (!string.IsNullOrEmpty(HeaderTitle))
+            {
+                <h5 class="card-title mb-0">@HeaderTitle</h5>
+            }
+            @HeaderContent
+        </div>
+    }
+
+    <div class="card-body @BodyClass">
+        @ChildContent
+    </div>
+
+    @if (FooterContent != null)
+    {
+        <div class="card-footer @FooterClass">
+            @FooterContent
+        </div>
+    }
+</div>
+
+@code {
+    [Parameter] public RenderFragment? ChildContent { get; set; }
+    [Parameter] public RenderFragment? HeaderContent { get; set; }
+    [Parameter] public RenderFragment? FooterContent { get; set; }
+
+    [Parameter] public string Class { get; set; } = string.Empty;
+    [Parameter] public string HeaderClass { get; set; } = string.Empty;
+    [Parameter] public string BodyClass { get; set; } = string.Empty;
+    [Parameter] public string FooterClass { get; set; } = string.Empty;
+    [Parameter] public string Style { get; set; } = string.Empty;
+
+    [Parameter] public string HeaderTitle { get; set; } = string.Empty;
+}
