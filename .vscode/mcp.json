@@ -1,0 +1,8 @@
+{
+  "servers": {
+    "narsil-mcp": {
+      "command": "narsil-mcp",
+      "args": ["--repos", "${workspaceFolder}"]
+    }
+  }
+}
