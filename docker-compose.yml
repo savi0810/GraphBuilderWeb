@@ -16,12 +16,14 @@ services:
 
   api:
     build:
-      context: ./GraphBuilderWeb
+      context: .
+      dockerfile: GraphBuilderWeb/Dockerfile
     networks:
       - dev
 
   frontend:
     build:
-      context: ./GraphBuilderFrontend
+      context: .
+      dockerfile: GraphBuilderFrontend/Dockerfile
     networks:
       - dev
