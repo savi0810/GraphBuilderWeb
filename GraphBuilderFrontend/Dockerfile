@@ -13,5 +13,5 @@ RUN dotnet publish ./GraphBuilderFrontend/GraphBuilderFrontend.csproj -c Release
 FROM nginx:alpine
 COPY --from=build /app/publish/wwwroot /usr/share/nginx/html
 COPY GraphBuilderFrontend/nginx.conf /etc/nginx/nginx.conf
-EXPOSE 80
+EXPOSE 3000
 CMD ["nginx", "-g", "daemon off;"]
