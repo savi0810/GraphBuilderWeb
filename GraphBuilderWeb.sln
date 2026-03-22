@@ -11,7 +11,6 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GraphBuilderFrontend", "Gra
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Элементы решения", "Элементы решения", "{A741FE56-778A-4B1E-B0B7-5B33522DDFE6}"
 	ProjectSection(SolutionItems) = preProject
-		nginx.conf = nginx.conf
 		docker-compose.yml = docker-compose.yml
 	EndProjectSection
 EndProject
