@@ -1,7 +1,7 @@
 FROM mcr.microsoft.com/dotnet/sdk:9.0 AS build
 WORKDIR /source
 
-COPY GraphBuilderFrontend/GraphBuilderFrontend.csproj ./GraphBuilderFrontend/
+COPY GraphBuilderFrontend/*.csproj ./GraphBuilderFrontend/
 COPY GraphBuilderShared/*.csproj ./GraphBuilderShared/
 
 RUN dotnet restore ./GraphBuilderFrontend/GraphBuilderFrontend.csproj
@@ -12,6 +12,6 @@ RUN dotnet publish ./GraphBuilderFrontend/GraphBuilderFrontend.csproj -c Release
 
 FROM nginx:alpine
 COPY --from=build /app/publish/wwwroot /usr/share/nginx/html
-COPY GraphBuilderFrontend/nginx.conf /etc/nginx/nginx.conf
+COPY GraphBuilderFrontend/nginx.conf /etc/nginx/conf.d/default.conf
 EXPOSE 3000
 CMD ["nginx", "-g", "daemon off;"]
